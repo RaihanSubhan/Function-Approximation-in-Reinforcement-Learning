@@ -1,5 +1,5 @@
-Function Approximation in Reinforcement Learning - Assignment 2
-==============================================================
+Function Approximation in Reinforcement Learning
+================================================
 
 Overview
 --------
