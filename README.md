@@ -1,83 +1,55 @@
-Function Approximation in Reinforcement Learning
-Project Overview
-This project implements and compares three reinforcement learning algorithms—DQN, REINFORCE, and A2C—using neural networks as function approximators on the CartPole-v1 environment. The aim is to highlight the impact of algorithmic approach on learning performance and stability when using the same network architecture, and to analyze results statistically across multiple independent runs.
+Function Approximation in Reinforcement Learning - Assignment 2
+==============================================================
+
+Overview
+--------
+This project implements and compares three RL algorithms (DQN, REINFORCE, A2C) using neural networks as function approximators on the CartPole-v1 environment. All algorithms share the same architecture and are assessed over 50 runs each to ensure robust statistical analysis of their mean and variance.
 
 Project Structure
-1. Main Code (RL-HW2.ipynb)
-Setup: Prepares the CartPole-v1 environment using Gymnasium, sets random seeds, and configures all agents to use a shared neural network architecture.
+-----------------
+1. Main Notebook (RL-HW2.ipynb)
+   - Environment setup: CartPole-v1 from Gymnasium.
+   - Algorithms: 
+        - DQN (with replay buffer and target network)
+        - REINFORCE (policy gradient)
+        - A2C (actor-critic)
+   - Common network: 4 input → 128 → 128 → 2 output (or 1 for critic)
+   - Experiment loop: Each algorithm runs 50 seeds, results are saved.
+   - Analysis and visualization: Plots mean ± stdev, saves all relevant data.
 
-Algorithm Implementations:
+2. Results Directory (results/)
+   - learning_curves_comparison.png      <- Main learning curve plot
+   - best_hyperparameters.json           <- Hyperparameters used
+   - statistical_summary.json            <- Table of mean ± stdev, convergence info
+   - dqn_run_0.pkl ... a2c_run_49.pkl    <- Rewards for each run per algorithm
 
-DQN: Q-value estimation using experience replay and target networks. Implements early stopping on convergence.
+Installation & Usage
+--------------------
+1. Open RL-HW2.ipynb in Google Colab.
+2. Run all cells. Dependencies will be installed automatically.
+3. All outputs/plots will appear at the end and files will save to results/.
 
-REINFORCE: Monte Carlo policy gradient using returns, with returns normalization for stability.
-
-A2C: Actor-Critic learning with shared policy and value networks; advantage estimation is used to reduce variance.
-
-Hyperparameter Studies: Hyperparameters (learning rates, batch size, buffer size) are tuned and optimized for Colab CPU runtime.
-
-Experiment Loop: Each algorithm is evaluated over 50 independent runs (with different seeds) to provide statistically meaningful learning curves and convergence data.
-
-Statistical Analysis & Visualization: Computes the mean and standard deviation of rewards across runs. Generates a comparison plot using matplotlib.
-
-2. Results and Figures
-results/learning_curves_comparison.png: Learning curve comparison of DQN, REINFORCE, and A2C (mean ± one std).
-
-results/best_hyperparameters.json: Saved dictionary of tuned hyperparameters for reproducibility.
-
-results/statistical_summary.json: JSON file with summary statistics (final mean reward, stdev, episodes to converge, etc).
-
-results/dqn_run_0.pkl to results/a2c_run_49.pkl: Raw results per run, per algorithm. Each is a pickled list of episode rewards.
-
-3. Codebase Files
-RL-HW2.ipynb: The main Colab notebook, fully executable and includes all code, experiments, and plotting setup.
-
-README.md: This file, providing structure and usage notes.
-
-Installation & Setup
-Clone or upload the notebook to Google Colab.
-
-Dependencies:
-
-Gymnasium, torch, matplotlib, numpy
-
-Install in Colab with:
-
-text
-!pip install gymnasium torch matplotlib
-Adjust experiment count/batch size as needed for runtime constraints. The code is optimized for 50 runs per algorithm for smooth Colab CPU usage.
-
-Running the Experiments
-Open and run all cells in RL-HW2.ipynb.
-
-Results are saved in the results/ folder.
-
-Plot and stats:
-
-The notebook will automatically display the comparative learning curve at the end.
-
-Key statistics (means, stds, episodes to converge) are printed and also saved to statistical_summary.json.
+Key Hyperparameters
+-------------------
+- DQN: lr=0.01, batch=16, buffer=2000, gamma=0.99
+- REINFORCE: lr=0.003, gamma=0.99
+- A2C: lr=0.003, gamma=0.99
 
 Experiment Workflow
-Each algorithm (DQN, REINFORCE, A2C) is trained using the shared network over 50 independent random seeds.
+-------------------
+- Each algorithm is evaluated over 50 runs for statistical stability.
+- Convergence condition: average reward ≥475 over last 100 episodes, or max episodes reached.
+- Output figures compare learning speed and stability.
 
-Hyperparameters are set for best performance on CPU within runtime limits.
+Outputs
+-------
+- Comparative learning curve (.png)
+- Per-run reward logs (.pkl/x3/50)
+- JSON logs for hyperparameters and final statistics
 
-For each algorithm, the episode rewards are saved per run and aggregated for statistical analysis.
+Notes
+-----
+- All code and results reproducible: just run the notebook from top to bottom.
+- Random seeds are controlled per run.
+- This setup is tested to finish within Google Colab’s free runtime on CPU.
 
-Output
-Figures: learning_curves_comparison.png holds the mean learning curves with ±1 standard deviation shaded.
-
-Data: Individual run rewards as .pkl files, and aggregate stats in JSON files.
-
-Hyperparameter log: Best experimental settings in best_hyperparameters.json.
-
-Summary
-By running the provided notebook, you systematically compare the function approximation capabilities of three core RL algorithms using neural networks. The produced plots, raw results, and numerical summaries support deeper assignment analyses and can be used in your report as figures and tables.
-
-Example Figures
-Learning Curve Comparison: Composite plot with DQN/REINFORCE/A2C (mean ± std).
-
-Statistical Table: Mean, stdev, and convergence info for each algorithm.
-
-All required outputs and analysis ready for assignment submission.
