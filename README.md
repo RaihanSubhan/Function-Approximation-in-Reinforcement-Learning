@@ -1,81 +1,75 @@
-DQN, REINFORCE, A2C on CartPole-v1
-==================================
+# DQN, REINFORCE, A2C on CartPole-v1
 
-Overview
---------
-This project implements and compares three RL algorithms—DQN (value-based), REINFORCE (policy-based),
-and A2C (actor–critic)—using the SAME neural network architecture. Each algorithm is trained until
-convergence and evaluated over 100 independent runs. The final deliverables are a mean learning-curve
-plot with ±1 standard deviation and a short report.
+## Overview
+This repository contains the implementation of three reinforcement learning (RL) algorithms—DQN (Deep Q-Learning), REINFORCE (Policy Gradient), and A2C (Advantage Actor-Critic)—applied to the CartPole-v1 environment. All models share the same neural network architecture and were evaluated across 100 independent runs to analyze both mean performance and variance.
 
-Environment
------------
-• Task: CartPole-v1 (Gymnasium)
-• Discount factor: gamma = 0.99
-• Optimizer: Adam
-• Network architecture: identical across all algorithms (same hidden layers/units/activations)
+## Environment
+- **Environment**: CartPole-v1 (Gymnasium)
+- **State Dimension**: 4 (position, velocity, angle, angular velocity)
+- **Action Space**: Discrete(2) → {Left, Right}
+- **Maximum Episode Length**: Until convergence or 10,000 episodes
 
-Stop Condition (per run)
-------------------------
-Training for a run stops when:
-• the average reward >= 475 over the most recent 100 consecutive episodes, OR
-• the run reaches 10,000 episodes.
+## Running the Code
+1. **Clone this repository and navigate to the project folder**:
+    ```bash
+    git clone <repo_link>
+    cd <project_folder>
+    ```
 
-Folder Structure (expected)
----------------------------
-.
-├─ RL-HW2.ipynb            # notebook you ran
-├─ results/
-│  ├─ dqn/                 # per-run reward arrays (e.g., seed_001.npz, ...)
-│  ├─ reinforce/
-│  └─ a2c/
-├─ figures/
-│  └─ comparison.png       # mean ± std plot across 100 runs (all three algorithms)
+2. **Install dependencies**:
+    Ensure that Python 3.9+ is installed, then use pip to install the necessary dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-Dependencies
-------------
-Python 3.9+ recommended. Install:
-  pip install torch gymnasium numpy matplotlib tqdm
+3. **Run the Experiment**:
+    The code trains three models (DQN, REINFORCE, A2C) on CartPole-v1 and saves the results (rewards per episode) in `results/` for each algorithm.
 
-(If your notebook already installs packages, this step can be skipped.)
+    To run the experiments:
+    ```bash
+    python run_experiments.py --algo all --runs 100
+    ```
 
-How to Reproduce
-----------------
-1) Open RL-HW2.ipynb in Jupyter/Colab and run all cells for each algorithm (DQN, REINFORCE, A2C).
-   - Ensure the SAME neural network architecture is used for all three (same hidden layers/units).
-   - Use different random seeds across the 100 runs.
-   - Save per-episode total rewards for each run into:
-       results/dqn/seed_XXX.npz
-       results/reinforce/seed_XXX.npz
-       results/a2c/seed_XXX.npz
-     (Each .npz should contain an array named "rewards".)
+4. **Aggregate the Results**:
+    After the experiments are completed, aggregate the results and plot the learning curves (mean ± standard deviation) for each algorithm:
+    ```bash
+    python analyze_and_plot.py
+    ```
 
-2) Aggregate and Plot
-   - Compute the mean and standard deviation of rewards across the 100 runs for each algorithm.
-   - Plot the mean curve and shade ±1 std. Save plot to:
-       figures/comparison.png
+5. **Generate the Report**:
+    Finally, generate a LaTeX-based PDF report that includes the learning curve plot and the analysis:
+    ```bash
+    python make_report.py
+    ```
 
-3) Report
-   - Use the provided LaTeX (Overleaf) template.
-   - Insert figures/comparison.png into the report.
-   - Briefly document: algorithms, shared network architecture, hyperparameter tuning process,
-     learning speed comparison, variance/stability, and final convergence behavior.
+## Key Hyperparameters
+- **DQN**: 
+    - Learning rate: 1e-3
+    - Batch size: 64
+    - Replay buffer size: 50,000
+    - Target update frequency: Every 500 steps
+    - Epsilon decay: 1.0 → 0.05 over 20,000 steps
 
-Notes on Hyperparameters
-------------------------
-• Learning rates may be tuned per algorithm (document the grid and selection rule).
-• DQN typically needs: replay buffer, batch size, target-network update interval, epsilon schedule.
-• REINFORCE uses Monte Carlo returns; variance can be reduced by normalizing returns.
-• A2C uses a value baseline and a small entropy bonus to stabilize exploration.
+- **REINFORCE**: 
+    - Learning rate: 1e-3
+    - Return normalization: Applied
 
-Reproducibility
----------------
-• Use a different seed for each independent run (100 runs).
-• Keep the training/stop criteria identical for all three algorithms.
-• Confirm that only the algorithm logic (not the architecture) differs between methods.
+- **A2C**: 
+    - Learning rate: 1e-3
+    - Value coefficient: 0.5
+    - Entropy coefficient: 0.01
 
-Outputs to Check Before Submitting
-----------------------------------
-1) results/<algo>/seed_*.npz  (100 files per algorithm)
-2) figures/comparison.png      (one figure with mean ± std for DQN, REINFORCE, A2C)
-3) Final PDF report (compiled from the Overleaf LaTeX below)
+## Results
+- **Stop Condition**: The algorithm stops when the moving average of the last 100 episodes exceeds a reward of 475 or after 10,000 episodes.
+- **Data Output**: Results are saved as `results/<algo>/seed_XXX.npz` (100 independent runs for each algorithm).
+- **Learning Curve Plot**: Saved as `figures/comparison.png` showing the mean ± std of the reward for each algorithm.
+- **Final Report**: Generated as `report/RL_HW2_report.pdf`.
+
+## Notes
+- All models use the same architecture:
+    - **Input**: 4-dimensional state
+    - **Hidden Layers**: 2 layers of 128 units with ReLU activation
+    - **Output**: DQN (Q-values), REINFORCE (action probabilities), A2C (action probabilities and state values)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
